@@ -22,6 +22,7 @@ import { Chip } from '@app/components/Chip';
 import { Row } from '@app/components/Row';
 import { PosterCard } from '@app/components/PosterCard';
 import { ErrorState } from '@app/components/StateViews';
+import { useDynamicAccent } from '@app/hooks/useDynamicAccent';
 
 const EP_DELAY_CAP = 280;
 const REVEAL_PLAYHEAD_SECONDS = 30;
@@ -239,6 +240,8 @@ export function DetailPage({ seriesId }: DetailPageProps): React.JSX.Element {
     [t('facts.languages'), langs],
     [t('facts.studio'), meta?.studios?.[0] ?? ''],
   ].filter((fact): fact is [string, string] => fact[1] !== '');
+
+  useDynamicAccent(bannerImage);
 
   return (
     <div data-screen-label={`Détails — ${detail.title}`}>

@@ -17,6 +17,7 @@ import { useI18n } from '@app/i18n/i18n';
 import { Chip } from '@app/components/Chip';
 import { Icon } from '@app/components/Icon';
 import { CommentsSection } from '@app/components/CommentsSection';
+import { useDynamicAccent } from '@app/hooks/useDynamicAccent';
 
 export interface WatchPageProps {
   readonly seriesId: string;
@@ -131,6 +132,8 @@ export function WatchPage({ seriesId, episodeId }: WatchPageProps): React.JSX.El
 
   const playEpisode = (ep: Episode): void => bridge.navigate(ep.watchPath);
   const openSeries = (): void => go({ page: 'detail', seriesId: data?.info?.seriesId || seriesId });
+
+  useDynamicAccent(current?.thumb);
 
   return (
     <div className="watch bcr-watch" data-screen-label="Lecteur">

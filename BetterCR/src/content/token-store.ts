@@ -69,6 +69,41 @@ export class TokenStore {
   private acquiring: Promise<string | null> | null = null;
   private lastAcquireFail = 0;
 
+  constructor() {
+    this.listenForChanges();
+  }
+
+  /**
+   * Syncs the in-memory token with changes made by other tabs (like profile switches
+   * or logouts) to prevent this tab from using an outdated cached token.
+   */
+  private listenForChanges(): void {
+    try {
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'local' && changes[TOKEN_STORAGE_KEY]) {
+          const stored = changes[TOKEN_STORAGE_KEY].newValue as StoredToken | undefined;
+          
+          if (stored && Date.now() < stored.expiry) {
+            if (this.token !== stored.token) {
+              this.token = stored.token;
+              this.expiry = stored.expiry;
+              this.accountId = stored.accountId ?? accountFromJwt(stored.token);
+              this.profileId = stored.profileId;
+            }
+          } else if (!stored) {
+            // Storage was cleared (e.g. logout)
+            this.token = null;
+            this.expiry = 0;
+            this.accountId = undefined;
+            this.profileId = undefined;
+          }
+        }
+      });
+    } catch {
+      // Storage API unavailable
+    }
+  }
+
   /** Stores a token captured by the page interceptor. */
   ingestDetail(detail: BcrTokenDetail): void {
     this.set(
@@ -139,6 +174,10 @@ export class TokenStore {
       const result = await chrome.storage.local.get(TOKEN_STORAGE_KEY);
       const stored = result[TOKEN_STORAGE_KEY] as StoredToken | undefined;
       if (stored && Date.now() < stored.expiry) {
+        // If we already have a valid token in memory that expires later or at the same time, keep it.
+        if (this.isValid() && this.expiry >= stored.expiry) {
+          return true;
+        }
         this.token = stored.token;
         this.expiry = stored.expiry;
         // Heal legacy/poisoned entries that were persisted without an account id.
@@ -180,25 +219,36 @@ export class TokenStore {
     if (this.isValid()) {
       return this.token;
     }
-    if (await this.loadFromStorage()) {
-      return this.token;
+    if (this.acquiring) {
+      return this.acquiring;
     }
-    if (Date.now() - this.lastAcquireFail < ACQUIRE_DEBOUNCE_MS) {
-      return this.passiveWait();
-    }
-    this.acquiring ??= this.acquire();
+    
+    this.acquiring = this.doEnsureToken();
     return this.acquiring;
   }
 
-  private async acquire(): Promise<string | null> {
+  private async doEnsureToken(): Promise<string | null> {
     try {
+      if (await this.loadFromStorage()) {
+        return this.token;
+      }
+      // Check again if a token was ingested while we were loading from storage.
+      if (this.isValid()) {
+        return this.token;
+      }
+      
+      if (Date.now() - this.lastAcquireFail < ACQUIRE_DEBOUNCE_MS) {
+        return await this.passiveWait();
+      }
+      
       const data = await acquireTokenFromCookie();
       if (data) {
         this.ingestAuth(data);
         return this.token;
       }
+      
       this.lastAcquireFail = Date.now();
-      return this.passiveWait();
+      return await this.passiveWait();
     } finally {
       this.acquiring = null;
     }
