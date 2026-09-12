@@ -30,6 +30,22 @@ and enriched with **AniList**.
 
 ---
 
+## 🚧 Project status
+
+> **BetterCR is not abandoned.**
+>
+> If updates become less frequent — or temporarily stop — it is because I am actively working on a **major evolution of the project and a substantially improved alternative**, rethought to be better across essentially every aspect.
+>
+> I am intentionally keeping the details private for now. At the same time, I am also working on **another large-scale private project**, which currently takes a significant amount of my development time.
+>
+> Most importantly, **the work already done on BetterCR will not be lost**. The features, ideas and improvements introduced here are part of what comes next. Existing functionality is not being thrown away.
+>
+> When the time is right, the current project will ultimately be replaced by a **final, corrected, more polished and significantly improved version, delivered in a different form**.
+>
+> So if things seem quiet here for a while: development has not stopped — it has simply moved behind the scenes.
+
+---
+
 ## 🖼️ Preview
 
 <div align="center">
