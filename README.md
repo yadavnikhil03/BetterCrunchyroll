@@ -30,6 +30,22 @@ Crunchyroll** et enrichie par **AniList**.
 
 ---
 
+## 🚧 État du projet
+
+> **BetterCR n'est pas abandonné.**
+>
+> Si les mises à jour deviennent moins fréquentes — ou s'arrêtent temporairement — c'est parce que je travaille activement sur **une évolution majeure du projet ainsi qu'une alternative profondément améliorée**, repensée pour être meilleure sur pratiquement tous les points.
+>
+> Je préfère volontairement garder les détails privés pour le moment. En parallèle, je travaille également sur **un autre projet privé de très grande envergure**, qui occupe actuellement une part importante de mon temps de développement.
+>
+> Le plus important : **tout le travail déjà réalisé sur BetterCR ne sera pas perdu**. Les fonctionnalités, les idées et les améliorations introduites ici feront partie de la suite. Les fonctionnalités actuelles ne seront pas simplement abandonnées.
+>
+> Lorsque le moment sera venu, le projet actuel sera finalement remplacé par une **version finale, corrigée, plus aboutie et largement améliorée, proposée sous une autre forme**.
+>
+> Donc si le dépôt semble plus calme pendant un moment : le développement ne s'est pas arrêté — il se poursuit simplement en coulisses.
+
+---
+
 ## 🖼️ Aperçu
 
 <div align="center">
